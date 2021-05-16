@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: db2app1war
+  name: db2app1war
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db2app1war
+  template:
+    metadata:
+      labels:
+        app: db2app1war
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/myproject/db2app1war:latest
+          imagePullPolicy: Always
+          name: db2app1war
+          ports:
+            - containerPort: 9080
+              protocol: TCP
