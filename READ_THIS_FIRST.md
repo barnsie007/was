@@ -22,8 +22,6 @@ the original source environment.  You need to provide it manually. For example,
   myhost_a1CellManager01_db2_password_1=''
   # ============================================================  
   ```
-- Verify the git url value in `pipeline/openshift/resources.yaml` which should be set correctly if the migration bundle
-  is send to git directly from the Transformation Advisor user interface. 
 
 ## Deploy to Red Hat OpenShift Container Platform using OpenShift Pipelines
 
@@ -33,7 +31,9 @@ the original source environment.  You need to provide it manually. For example,
 2. An available `PersistentVolume` with at least 100Mi capacity and `accessMode` of `ReadWriteOnce`. The pipeline will create and use a `PersistentVolumeClaim` that will bind to this available `PersistentVolume`.
    The storage should have appropriate permissions to allow writing from the pipeline pods.
 
-3. If you wish to control and monitor your pipeline from the command line, install the OpenShift pipeline CLI by following the instructions [here](https://github.com/tektoncd/cli) 
+3. If your git repository is private, then you will need to set authentication. See "Basic Authentication for Git" section below.
+
+4. If you wish to control and monitor your pipeline from the command line, install the OpenShift pipeline CLI by following the instructions [here](https://github.com/tektoncd/cli) 
 
 ### Steps
 1. Login to OCP cluster and create a project
@@ -58,6 +58,8 @@ the original source environment.  You need to provide it manually. For example,
    
    - Set context root in route resource in the file `pipeline/k8s/route.yaml`. The path is set to / by default.
    
+   - Push any changes you have made to your remote repo.
+   
    - Create the resources and start a pipeline run:
    ```
    oc create -f pipeline/openshift
@@ -76,7 +78,7 @@ the original source environment.  You need to provide it manually. For example,
    ```
 
 
-## Basic authentication (Git)
+### Basic Authentication for Git
 
 Define a secret containing the username and access token to the github repository if the repository is a private repository or GitHub enterprise repository.
 
@@ -103,7 +105,13 @@ Define a secret containing the username and access token to the github repositor
   ```
   oc secrets link pipeline ghe-token
   ```
-- start the Tekton pipeline run with the `pipeline` service account
+- If running the pipeline from the command line, start the Tekton pipeline run with the `pipeline` service account
   ```
   tkn pipeline start build-and-deploy -s pipeline
   ```
+
+### References
+
+https://github.com/WASdev/ci.docker.websphere-traditional#readme
+
+https://github.com/WASdev/ci.docker.websphere-traditional/tree/master/samples/hello-world/openshift
